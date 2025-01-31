@@ -26,6 +26,12 @@ sudo apt update && sudo apt install bazel
 bazel run main
 
 INFO: Running command line: bazel-bin/main
-mumpy.add(2, 3)=5
+mp.add(2, 3)=5
+mp.matmul_generic(x, y)=array([[-2.],
+       [-2.],
+       [-2.]])
+x @ y =array([[-2.],
+       [-2.],
+       [-2.]])
 ```
 

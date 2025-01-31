@@ -15,9 +15,4 @@ y = np.array([
 ], dtype=np.float64)
 
 print(f"{mp.matmul_generic(x, y)=}")
-"""
-mp.add(2, 3)=5
-mp.matmul_generic(x, y)=array([[-2.],
-       [-2.],
-       [-2.]])
-"""
+print(f"{x @ y =}")
