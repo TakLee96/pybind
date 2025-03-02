@@ -14,6 +14,18 @@ py_binary(
     ]
 )
 
+py_binary(
+    name = "benchmark",
+    srcs = [ "benchmark.py" ],
+    main = "benchmark.py",
+    imports = [ "." ],
+    data = [ ":mumpy" ],
+    python_version = "PY3",
+    deps = [
+        requirement("numpy"),
+    ]
+)
+
 pybind_extension(
     name = "mumpy",
     srcs = [ "mumpy.cc" ],

@@ -20,6 +20,8 @@ PYBIND11_MODULE(mumpy, m) {
 
     m.def("matmul_col", &linalg::matmul_col, "matmul only col-major numpy array");
 
+    m.def("matmul_cuda", &cuda::matmul, "matmul two matrices using cuda");
+
     m.def("vector_add_cuda", &cuda::vector_add, "add two vectors using cuda");
 }
 
