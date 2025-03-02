@@ -30,8 +30,29 @@ mp.add(2, 3)=5
 mp.matmul_generic(x, y)=array([[-2.],
        [-2.],
        [-2.]])
+mp.matmul_cuda(x, y)=array([[-2.],
+       [-2.],
+       [-2.]])
 x @ y =array([[-2.],
        [-2.],
        [-2.]])
+mp.vector_add_cuda(y, y)=array([ 2.,  0., -2.])
+y + y =array([[ 2.],
+       [ 0.],
+       [-2.]])
 ```
 
+```
+bazel run benchmark
+
+INFO: Running command line: bazel-bin/benchmark
+numpy elapsed: 0.02 sec
+mumpy.matmul_generic elapsed: 15.06 sec
+(z_mp_cpu_gen - z_np).mean()=np.float64(-2.0200859600951216e-17)
+mumpy.matmul_row elapsed: 14.72 sec
+(z_mp_cpu_row - z_np).mean()=np.float64(-2.0200859600951216e-17)
+mumpy.matmul_col elapsed: 13.57 sec
+(z_mp_cpu_col - z_np).mean()=np.float64(-2.0200859600951216e-17)
+mumpy.matmul_cuda elapsed: 0.14 sec
+(z_mp_gpu - z_np).mean()=np.float64(1.9976171135296154e-17)
+```

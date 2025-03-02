@@ -25,7 +25,7 @@ namespace mumpy::cuda {
     }                                                                   \
   } while (0)
 
-__global__ void vector_add_kernel(const float *A, const float *B, float *C,
+__global__ void vector_add_kernel(const double *A, const double *B, double *C,
                                   int num_elements) {
   int i = blockDim.x * blockIdx.x + threadIdx.x;
 
@@ -34,20 +34,20 @@ __global__ void vector_add_kernel(const float *A, const float *B, float *C,
   }
 }
 
-Eigen::VectorXf vector_add(const Eigen::VectorXf& x, const Eigen::VectorXf& y) {
+Eigen::VectorXd vector_add(const Eigen::VectorXd& x, const Eigen::VectorXd& y) {
   CHECK(x.size() == y.size());
-  Eigen::VectorXf z;
+  Eigen::VectorXd z;
   z.resizeLike(x);
   z.setZero();
 
   // Allocate the device inputs and outputs
   int num_elements = x.size();
-  size_t size = num_elements * sizeof(float);
-  float *d_A = nullptr;
+  size_t size = num_elements * sizeof(double);
+  double *d_A = nullptr;
   CUDA_CHECK(cudaMalloc((void **)&d_A, size));
-  float *d_B = nullptr;
+  double *d_B = nullptr;
   CUDA_CHECK(cudaMalloc((void **)&d_B, size));
-  float *d_C = nullptr;
+  double *d_C = nullptr;
   CUDA_CHECK(cudaMalloc((void **)&d_C, size));
 
   // Copy and launch
@@ -67,10 +67,10 @@ Eigen::VectorXf vector_add(const Eigen::VectorXf& x, const Eigen::VectorXf& y) {
   return z;
 }
 
-__global__ void matmul_kernel(const float *A, const float *B, float *C, int m, int n, int k) { 
+__global__ void matmul_kernel(const double *A, const double *B, double *C, int m, int n, int k) { 
     int row = blockIdx.y * blockDim.y + threadIdx.y; 
     int col = blockIdx.x * blockDim.x + threadIdx.x;
-    float sum = 0;
+    double sum = 0;
     if (col < k && row < m) {
       for (int i = 0; i < n; i++) {
         sum += A[row * n + i] * B[i * k + col];
@@ -79,25 +79,25 @@ __global__ void matmul_kernel(const float *A, const float *B, float *C, int m, i
     }
 }
 
-MatrixXfRowMajor matmul(const MatrixXfRowMajor& x, const MatrixXfRowMajor& y) {
+MatrixXdRowMajor matmul(const MatrixXdRowMajor& x, const MatrixXdRowMajor& y) {
   CHECK(x.cols() == y.rows());
   int m = x.rows();
   int n = x.cols();
   int k = y.cols();
-  MatrixXfRowMajor z(m, k);
+  MatrixXdRowMajor z(m, k);
   z.setZero();
 
   // Allocate the device inputs and outputs
-  float *d_A = nullptr;
-  CUDA_CHECK(cudaMalloc((void **)&d_A, x.size() * sizeof(float)));
-  float *d_B = nullptr;
-  CUDA_CHECK(cudaMalloc((void **)&d_B, y.size() * sizeof(float)));
-  float *d_C = nullptr;
-  CUDA_CHECK(cudaMalloc((void **)&d_C, z.size() * sizeof(float)));
+  double *d_A = nullptr;
+  CUDA_CHECK(cudaMalloc((void **)&d_A, x.size() * sizeof(double)));
+  double *d_B = nullptr;
+  CUDA_CHECK(cudaMalloc((void **)&d_B, y.size() * sizeof(double)));
+  double *d_C = nullptr;
+  CUDA_CHECK(cudaMalloc((void **)&d_C, z.size() * sizeof(double)));
 
   // Copy and launch
-  CUDA_CHECK(cudaMemcpy(d_A, x.data(), x.size() * sizeof(float), cudaMemcpyHostToDevice));
-  CUDA_CHECK(cudaMemcpy(d_B, y.data(), y.size() * sizeof(float), cudaMemcpyHostToDevice));
+  CUDA_CHECK(cudaMemcpy(d_A, x.data(), x.size() * sizeof(double), cudaMemcpyHostToDevice));
+  CUDA_CHECK(cudaMemcpy(d_B, y.data(), y.size() * sizeof(double), cudaMemcpyHostToDevice));
   int block_size = 16;
   unsigned int grid_rows = (m + block_size - 1) / block_size;
   unsigned int grid_cols = (k + block_size - 1) / block_size;
@@ -105,7 +105,7 @@ MatrixXfRowMajor matmul(const MatrixXfRowMajor& x, const MatrixXfRowMajor& y) {
   dim3 dimBlock(block_size, block_size);
   matmul_kernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, m, n, k);
   CUDA_CHECK(cudaGetLastError());
-  CUDA_CHECK(cudaMemcpy(z.data(), d_C, z.size() * sizeof(float), cudaMemcpyDeviceToHost));
+  CUDA_CHECK(cudaMemcpy(z.data(), d_C, z.size() * sizeof(double), cudaMemcpyDeviceToHost));
 
   // Free device global memory
   CUDA_CHECK(cudaFree(d_A));

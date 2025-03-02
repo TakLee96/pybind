@@ -4,9 +4,9 @@
 
 namespace mumpy::cuda {
 
-Eigen::VectorXf vector_add(const Eigen::VectorXf& x, const Eigen::VectorXf& y);
+Eigen::VectorXd vector_add(const Eigen::VectorXd& x, const Eigen::VectorXd& y);
 
-using MatrixXfRowMajor = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
-MatrixXfRowMajor matmul(const MatrixXfRowMajor& x, const MatrixXfRowMajor& y);
+using MatrixXdRowMajor = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
+MatrixXdRowMajor matmul(const MatrixXdRowMajor& x, const MatrixXdRowMajor& y);
 
 } // mumpy::cuda
