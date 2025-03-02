@@ -18,6 +18,7 @@ pybind_extension(
     name = "mumpy",
     srcs = [ "mumpy.cc" ],
     deps = [
-        "//linalg:lib"
+        "//linalg:lib",
+        "//cuda:kernel"
     ]
 )

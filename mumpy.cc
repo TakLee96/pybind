@@ -1,6 +1,7 @@
 #include <pybind11/pybind11.h>
 
 #include "linalg/matmul.h"
+#include "cuda/kernel.h"
 
 namespace mumpy {
 
@@ -18,6 +19,8 @@ PYBIND11_MODULE(mumpy, m) {
     m.def("matmul_row", &linalg::matmul_row, "matmul only numpy array");
 
     m.def("matmul_col", &linalg::matmul_col, "matmul only col-major numpy array");
+
+    m.def("vector_add_cuda", &cuda::vector_add, "add two vectors using cuda");
 }
 
 } // namespace mumpy

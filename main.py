@@ -16,3 +16,6 @@ y = np.array([
 
 print(f"{mp.matmul_generic(x, y)=}")
 print(f"{x @ y =}")
+
+print(f"{mp.vector_add_cuda(y, y)=}")
+print(f"{y + y =}")

@@ -9,6 +9,7 @@ bazel_dep(name = "platforms", version = "0.0.10")
 bazel_dep(name = "rules_cc", version = "0.0.9")
 bazel_dep(name = "rules_python", version = "0.34.0")
 bazel_dep(name = "eigen", version = "4.0.0-20241125.bcr.1")
+bazel_dep(name = "rules_cuda", version = "0.2.5")
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 python.toolchain(
@@ -22,3 +23,11 @@ pip.parse(
     requirements_lock = "//:requirements.txt",
 )
 use_repo(pip, "my_deps")
+
+
+cuda = use_extension("@rules_cuda//cuda:extensions.bzl", "toolchain")
+cuda.local_toolchain(
+    name = "local_cuda",
+    toolkit_path = "/usr/local/cuda",
+)
+use_repo(cuda, "local_cuda")
